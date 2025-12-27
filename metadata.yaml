@@ -1,6 +1,6 @@
 name: astrbot_plugin_extract
-display_name: 解析插件
-desc: 对文本、图片、视频、语音、文件等进行信息提取并解析
+display_name: 媒体元数据解析
+desc: 对图片、视频、语音、文件等媒体的元数据进行解析
 version: v1.0.0
 author: Zhalslar
 repo: https://github.com/Zhalslar/astrbot_plugin_extract
