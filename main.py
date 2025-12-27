@@ -17,6 +17,7 @@ class ExtractPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
         self.config = config
+        self.extract_types = self.config["extract_types"]
         self.geo_resolver = GeoResolver(config)
         self.image_extractor = ImageExtractor(config, self.geo_resolver)
         self.audio_extractor = AudioExtractor(config)
@@ -51,13 +52,13 @@ class ExtractPlugin(Star):
         ext = FileExt.from_bytes(data)
         logger.debug(f"媒体类型: {ext}")
 
-        if ext.is_image():
+        if ext.is_image() and "image" in self.extract_types:
             info = await self.image_extractor.get_image_info(data, ext)
 
-        elif ext.is_audio():
+        elif ext.is_audio() and "audio" in self.extract_types:
             info = await self.audio_extractor.get_audio_info(data, ext)
 
-        elif ext.is_video():
+        elif ext.is_video() and "video" in self.extract_types:
             info = await self.video_extractor.get_video_info(data, ext)
 
         else:
