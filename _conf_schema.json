@@ -9,12 +9,14 @@
             "audio"
         ],
         "default": [
-            "image"
+            "image",
+            "video",
+            "audio"
         ]
     },
     "enable_geo_resolver": {
         "description": "逆解析GPS的地理信息",
-        "hint":"需要代理",
+        "hint": "需要代理",
         "type": "bool",
         "default": false
     },

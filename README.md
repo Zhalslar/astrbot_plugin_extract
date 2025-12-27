@@ -5,7 +5,7 @@
 
 # astrbot_plugin_extract
 
-_✨ 解析插件 ✨_  
+_✨ 元数据解析 ✨_  
 
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -16,11 +16,11 @@ _✨ 解析插件 ✨_
 
 ## 🤝 介绍
 
-对文本、图片、视频、语音、文件等进行信息提取并解析
+对图片、视频、语音、文件等媒体的元数据进行解析
 
 ## 📦 安装
 
-- 在astrbot的插件市场搜索astrbot_plugin_extract，点击安装，耐心等待安装完成即可
+在astrbot的插件市场搜索astrbot_plugin_extract，点击安装即可
 
 ## ⌨️ 使用说明
 
