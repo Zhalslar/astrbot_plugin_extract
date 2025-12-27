@@ -1,31 +1,71 @@
+from astrbot.api import logger
 from astrbot.api.event import filter
 from astrbot.api.star import Context, Star
 from astrbot.core.config.astrbot_config import AstrBotConfig
 from astrbot.core.platform.astr_message_event import AstrMessageEvent
+from astrbot.core.platform.sources.aiocqhttp.aiocqhttp_message_event import (
+    AiocqhttpMessageEvent,
+)
 
-from .core.image_extract import ImageInfoExtractor
-from .core.utils import download_file, get_image
+from .core.extractor import AudioExtractor, ImageExtractor, VideoExtractor
+from .core.file_type import FileExt
+from .core.geo_resolver import GeoResolver
+from .core.utils import download_file, get_media, get_reply_id
 
 
 class ExtractPlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
         self.config = config
-        self.image_extractor = ImageInfoExtractor(config)
+        self.geo_resolver = GeoResolver(config)
+        self.image_extractor = ImageExtractor(config, self.geo_resolver)
+        self.audio_extractor = AudioExtractor(config)
+        self.video_extractor = VideoExtractor(config)
+
+    async def terminate(self):
+        await self.geo_resolver.close()
+
+    @filter.command("raw")
+    async def raw(self, event: AstrMessageEvent):
+        """查看消息的原始结构"""
+        if isinstance(event, AiocqhttpMessageEvent):
+            if msg_id := get_reply_id(event):
+                msg = await event.bot.get_msg(message_id=msg_id)
+                yield event.plain_result(str(msg))
+        else:
+            yield event.plain_result(str(event.message_obj.raw_message))
 
     @filter.command("解析")
     async def parse(self, event: AstrMessageEvent):
-        """解析图片的信息"""
-        image_url = await get_image(event)
-        if not image_url:
-            yield event.plain_result("未指定要解析的图片")
+        """解析媒体的信息"""
+        url = await get_media(event)
+        if not url:
+            yield event.plain_result("没解析到有效的URL")
             return
-        image = await download_file(image_url)
-        if not image:
-            yield event.plain_result("图片下载失败")
+        logger.debug(f"解析媒体: {url}")
+        data = await download_file(url)
+        if not data:
+            yield event.plain_result("媒体下载失败")
             return
-        info_str = await self.image_extractor.get_image_info(image)
-        if not info_str:
+
+        ext = FileExt.from_bytes(data)
+        logger.debug(f"媒体类型: {ext}")
+
+        if ext.is_image():
+            info = await self.image_extractor.get_image_info(data, ext)
+
+        elif ext.is_audio():
+            info = await self.audio_extractor.get_audio_info(data, ext)
+
+        elif ext.is_video():
+            info = await self.video_extractor.get_video_info(data, ext)
+
+        else:
+            yield event.plain_result("不支持的媒体类型")
+            return
+
+        if not info:
             yield event.plain_result("解析信息时出错")
             return
-        yield event.plain_result(info_str)
+
+        yield event.plain_result(info)

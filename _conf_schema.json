@@ -1,28 +1,24 @@
 {
     "extract_types": {
         "description": "启用的解析类型",
-        "hint": "",
+        "hint": "目前已支持的解析类型有：image, video, audio。 后续会支持更多解析类型",
         "type": "list",
         "options": [
-            "text",
-            "markdown",
-            "xml",
-            "csv",
             "image",
             "video",
-            "audio",
-            "zip",
-            "docx",
-            "excel",
-            "pdf",
-            "html",
-            "json"
+            "audio"
         ],
         "default": [
             "image"
         ]
     },
-    "http_proxy": {
+    "enable_geo_resolver": {
+        "description": "逆解析GPS的地理信息",
+        "hint":"需要代理",
+        "type": "bool",
+        "default": false
+    },
+    "proxy": {
         "description": "HTTP代理地址",
         "type": "string",
         "hint": "用于需要外部网络请求的功能。例如: http://127.0.0.1:7890，留空则直连",
