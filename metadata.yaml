@@ -1,6 +1,7 @@
 name: astrbot_plugin_extract
 display_name: 元数据解析
 desc: 对图片、视频、语音、文件等媒体的元数据进行解析
+help: 略
 version: v1.0.0
 author: Zhalslar
 repo: https://github.com/Zhalslar/astrbot_plugin_extract
